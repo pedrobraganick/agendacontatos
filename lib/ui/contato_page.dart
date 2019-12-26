@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:agendacontatos/helpers/contato_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContatoPage extends StatefulWidget {
   final Contato contato;
@@ -72,6 +73,18 @@ class _ContatoPageState extends State<ContatoPage> {
                               ? FileImage(File(_contatoEditado.img))
                               : AssetImage("images/person.png"))),
                 ),
+                onTap: (){
+                  ImagePicker.pickImage(source: ImageSource.camera).then(
+                      (file){
+                        if(file == null)
+                          return;
+                        else
+                          setState(() {
+                            _contatoEditado.img = file.path;
+                          });
+                      }
+                  );
+                },
               ),
               TextField(
                 focusNode: _nameFocus,

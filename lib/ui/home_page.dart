@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:agendacontatos/helpers/contato_helper.dart';
 import 'package:agendacontatos/ui/contato_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+enum OrderOptions {orderaz, orderza}
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,6 +38,21 @@ class _HomePageState extends State<HomePage> {
         title: Text("Contatos"),
         centerTitle: true,
         backgroundColor: Colors.red,
+        actions: <Widget>[
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                child: Text("Ordenar de A-Z"),
+                value: OrderOptions.orderaz,
+              ),
+              const PopupMenuItem<OrderOptions>(
+                child: Text("Ordenar de Z-A"),
+                value: OrderOptions.orderza,
+              ),
+            ],
+            onSelected: orderList,
+          )
+        ],
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -118,6 +136,10 @@ void _showOptions(BuildContext context, int index){
                           child: Text("Ligar",
                             style: TextStyle(color: Colors.red,fontSize: 20.0),
                           ),
+                        onPressed: (){
+                            launch("tel:${contatos[index].fone}");
+                            Navigator.pop(context);
+                        },
                     )
                     ),
                     Padding(
@@ -169,5 +191,23 @@ void _showOptions(BuildContext context, int index){
 
       _getAllContatos();
     }
+  }
+
+  void orderList(OrderOptions result){
+    switch(result){
+      case OrderOptions.orderaz :
+        contatos.sort((a, b) { return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
+        break;
+      case OrderOptions.orderza:
+        contatos.sort((a,b) { return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+        });
+        break;
+    }
+
+    setState(() {
+
+    });
+
   }
 }
